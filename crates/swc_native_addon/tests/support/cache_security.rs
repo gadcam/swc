@@ -200,7 +200,9 @@ fn unsafe_user_cache_falls_back_to_temporary_directory() {
     let fallback = base.join("tmp");
     fs::create_dir_all(&shared).unwrap();
     fs::create_dir_all(&fallback).unwrap();
+    fs::set_permissions(&base, fs::Permissions::from_mode(0o700)).unwrap();
     fs::set_permissions(&shared, fs::Permissions::from_mode(0o770)).unwrap();
+    fs::set_permissions(&fallback, fs::Permissions::from_mode(0o700)).unwrap();
     let output = Command::new(env::current_exe().unwrap())
         .args(["--exact", "cache_security::fallback_worker", "--nocapture"])
         .env(TEST_ROOT, &fallback)
